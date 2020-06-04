@@ -1,7 +1,7 @@
 part of 'overlay.dart';
 
 ///
-/// [OverlaySupportEntry] represent a overlay popup by [showOverlay]
+/// [OverlaySupportEntry] represent a overlay popup by [showOverlayAutoHide]
 ///
 /// provide function [dismiss] to dismiss a Notification/Overlay
 ///

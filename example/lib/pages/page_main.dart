@@ -95,7 +95,7 @@ class HomePage extends StatelessWidget {
         _Section(title: 'custom', children: [
           RaisedButton(
             onPressed: () {
-              showOverlay((_, t) {
+              showOverlayAutoHide((_, t) {
                 return Theme(
                   data: Theme.of(context),
                   child: Opacity(
@@ -109,7 +109,7 @@ class HomePage extends StatelessWidget {
           ),
           RaisedButton(
             onPressed: () {
-              showOverlay((context, t) {
+              showOverlayAutoHide((context, t) {
                 return CustomAnimationToast(value: t);
               }, key: ValueKey('hello'), curve: Curves.decelerate);
             },
@@ -117,7 +117,7 @@ class HomePage extends StatelessWidget {
           ),
           RaisedButton(
             onPressed: () {
-              showOverlay((context, t) {
+              showOverlayAutoHide((context, t) {
                 return Container(
                   color: Color.lerp(Colors.transparent, Colors.black54, t),
                   child: FractionalTranslation(
@@ -138,6 +138,74 @@ class HomePage extends StatelessWidget {
               }, duration: Duration.zero);
             },
             child: Text('show notification with barrier'),
+          ),
+          RaisedButton(
+            onPressed: () {
+              showOverlay(
+                (context) {
+                  return Container(
+                    width: 60.0,
+                    height: 60.0,
+                    margin: EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                  );
+                },
+                childHeight: 76.0,
+                childWidth: 76.0,
+                itemHeight: 50.0,
+                spaceItem: 8.0,
+                items: <Widget>[
+                  Container(
+                    width: 50.0,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  Container(
+                    width: 50.0,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  Container(
+                    width: 50.0,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  Container(
+                    width: 50.0,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  Container(
+                    width: 50.0,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                  ),
+                ],
+              );
+            },
+            child: Text('SUSU button'),
           )
         ])
       ],

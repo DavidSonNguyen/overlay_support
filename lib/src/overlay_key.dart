@@ -13,7 +13,7 @@ class _KeyedOverlay extends StatelessWidget {
   }
 }
 
-/// [showOverlay] with block other show with the same [ModalKey]
+/// [showOverlayAutoHide] with block other show with the same [ModalKey]
 ///
 /// for example
 /// ```dart
@@ -47,7 +47,7 @@ class _OverlayKey extends ValueKey<Key> {
 
 ///
 /// The [OverlaySupportEntry] associated with [TransientKey] will be dismiss immediately
-/// when next [OverlaySupportEntry] showing by [showOverlay] with the same key.
+/// when next [OverlaySupportEntry] showing by [showOverlayAutoHide] with the same key.
 ///
 /// This key was designed for [toast], but it seems wired, so have not use yet.
 ///

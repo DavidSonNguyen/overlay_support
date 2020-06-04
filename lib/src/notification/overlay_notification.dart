@@ -21,7 +21,7 @@ OverlaySupportEntry showOverlayNotification(
   if (duration == null) {
     duration = kNotificationDuration;
   }
-  return showOverlay((context, t) {
+  return showOverlayAutoHide((context, t) {
     MainAxisAlignment alignment = MainAxisAlignment.start;
     if (position == NotificationPosition.bottom) alignment = MainAxisAlignment.end;
     return Column(

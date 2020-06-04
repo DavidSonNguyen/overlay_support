@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:flutter/material.dart';
 import 'package:overlay_support/src/theme.dart';
 
 part 'overlay_animation.dart';
@@ -14,12 +15,16 @@ part 'overlay_entry.dart';
 
 part 'overlay_key.dart';
 
+part 'overlay_drag_widget.dart';
+
 /// to build a widget with animated value
 /// [progress] : the progress of overlay animation from 0 - 1
 ///
 /// a simple use case is [TopSlideNotification] in [showOverlayNotification]
 ///
 typedef Widget AnimatedOverlayWidgetBuilder(BuildContext context, double progress);
+
+typedef Widget OverlayWidgetBuilder(BuildContext context);
 
 ///basic api to show overlay widget
 ///
@@ -49,7 +54,7 @@ typedef Widget AnimatedOverlayWidgetBuilder(BuildContext context, double progres
 /// if you want notification1' exist to prevent step2, please see [ModalKey]
 ///
 ///
-OverlaySupportEntry showOverlay(
+OverlaySupportEntry showOverlayAutoHide(
   AnimatedOverlayWidgetBuilder builder, {
   Curve curve,
   Duration duration,
@@ -95,6 +100,71 @@ OverlaySupportEntry showOverlay(
       ),
     );
   }), overlayKey, stateKey);
+
+  overlay.insert(entry._entry);
+
+  return entry;
+}
+
+OverlaySupportEntry showOverlay(
+  OverlayWidgetBuilder builder, {
+  Key key,
+  @required double childWidth,
+  @required double childHeight,
+  List<Widget> items = const [],
+  double itemHeight = 0.0,
+  double spaceItem = 0.0,
+  double initOffsetX = 0.0,
+  double initOffsetY = 0.0,
+}) {
+  assert(key is! GlobalKey);
+  assert(_debugInitialized, 'OverlaySupport Not Initialized ! \nensure your app wrapped widget OverlaySupport');
+  assert(childWidth != null && childHeight != null);
+
+  final OverlayState overlay = _overlayState;
+  if (overlay == null) {
+    assert(() {
+      debugPrint('overlay not avaliable, dispose this call : $key');
+      return true;
+    }());
+    return OverlaySupportEntry.empty();
+  }
+
+  final overlayKey = _OverlayKey(key);
+
+  final supportEntry = OverlaySupportEntry._entries[overlayKey];
+  if (supportEntry != null && key is ModalKey) {
+    // Do nothing for modal key if there be a OverlayEntry hold the same model key
+    // and it is showing.
+    return supportEntry;
+  }
+
+  final dismissImmediately = key is TransientKey;
+  // If we got a showing overlay with [key], we should dismiss it before showing a new.
+  supportEntry?.dismiss(animate: !dismissImmediately);
+
+  final stateKey = GlobalKey<_AnimatedOverlayState>();
+  OverlaySupportEntry entry = OverlaySupportEntry(
+    OverlayEntry(
+      builder: (context) {
+        return _KeyedOverlay(
+          key: overlayKey,
+          child: OverlayDragWidget(
+            childHeight: childWidth,
+            childWidth: childHeight,
+            child: builder(context),
+            items: items,
+            itemHeight: itemHeight,
+            spaceItem: spaceItem,
+            initOffsetX: initOffsetX,
+            initOffsetY: initOffsetY,
+          ),
+        );
+      },
+    ),
+    overlayKey,
+    stateKey,
+  );
 
   overlay.insert(entry._entry);
 
