@@ -82,7 +82,7 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
                             setState(() {
                               gotoBottom = true;
                             });
-                            _movingVerticalAnimController.forward();
+                            _movingVerticalAnimController.forward(from: 0.0);
                           } else {
                             _movingVerticalAnimController.reset();
                             setState(() {
@@ -112,8 +112,8 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
                       onDragEnd: (detail) {
                         top = detail.offset.dy;
                         left = detail.offset.dx;
-                        _movingHorizontalAnimController.forward();
-                        _movingVerticalAnimController.forward();
+                        _movingHorizontalAnimController.forward(from: 0.0);
+                        _movingVerticalAnimController.forward(from: 0.0);
                       },
                     ),
                   );
