@@ -33,6 +33,7 @@ class OverlayDragWidget extends StatefulWidget {
 class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStateMixin {
   AnimationController _movingHorizontalAnimController;
   AnimationController _movingVerticalAnimController;
+  AnimationController _scaleItemAnimController;
 
   double top = 0.0;
   double left = 0.0;
@@ -58,6 +59,13 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
       lowerBound: 0.0,
       duration: Duration(milliseconds: 100),
     );
+
+    _scaleItemAnimController = AnimationController(
+      vsync: this,
+      upperBound: 1.0,
+      lowerBound: 0.0,
+      duration: Duration(milliseconds: 100),
+    );
   }
 
   @override
@@ -77,17 +85,19 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
                     child: Draggable<Color>(
                       child: GestureDetector(
                         onTap: () {
-                          if (!gotoBottom) {
+                          if (gotoBottom) {
+                            _movingVerticalAnimController.reset();
+                            setState(() {
+                              gotoBottom = false;
+                            });
+                            _scaleItemAnimController.reverse();
+                          } else {
                             _movingVerticalAnimController.reset();
                             setState(() {
                               gotoBottom = true;
                             });
                             _movingVerticalAnimController.forward(from: 0.0);
-                          } else {
-                            _movingVerticalAnimController.reset();
-                            setState(() {
-                              gotoBottom = false;
-                            });
+                            _scaleItemAnimController.forward();
                           }
                         },
                         child: Column(
@@ -96,9 +106,18 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
                             widget.child,
                             !gotoBottom
                                 ? SizedBox.shrink()
-                                : Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: widget.items,
+                                : AnimatedBuilder(
+                                    animation: _scaleItemAnimController,
+                                    builder: (context, childScale) {
+                                      return Transform.scale(
+                                        scale: (_scaleItemAnimController.value),
+                                        alignment: Alignment.topCenter,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: widget.items,
+                                        ),
+                                      );
+                                    },
                                   ),
                           ],
                         ),
