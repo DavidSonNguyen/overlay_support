@@ -40,6 +40,7 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
   Size size;
 
   bool gotoBottom = false;
+  bool dragging = false;
 
   @override
   void initState() {
@@ -64,7 +65,7 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
       vsync: this,
       upperBound: 1.0,
       lowerBound: 0.0,
-      duration: Duration(milliseconds: 100),
+      duration: Duration(milliseconds: 200),
     );
   }
 
@@ -80,31 +81,49 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
                 animation: _movingVerticalAnimController,
                 builder: (context, childVertical) {
                   return Positioned(
-                    top: calculateY(),
+                    top: standardTop(calculateY()),
                     left: calculateX(),
-                    child: Draggable<Color>(
-                      child: GestureDetector(
-                        onTap: () {
-                          if (gotoBottom) {
+                    child: Column(
+                      children: [
+                        Draggable<Color>(
+                          child: GestureDetector(
+                            onTap: () {
+                              if (gotoBottom) {
+                                gotoBottom = false;
+                                top = (size.height -
+                                    widget.childHeight -
+                                    (widget.items.length * widget.itemHeight - widget.items.length * widget.spaceItem));
+                                _scaleItemAnimController.reverse();
+                              } else {
+                                gotoBottom = true;
+                                _movingVerticalAnimController.forward(from: 0.0);
+                                _scaleItemAnimController.forward();
+                              }
+                            },
+                            child: widget.child,
+                          ),
+                          feedback: widget.child,
+                          childWhenDragging: Container(),
+                          onDragStarted: () {
+                            _movingHorizontalAnimController.reset();
                             _movingVerticalAnimController.reset();
                             setState(() {
-                              gotoBottom = false;
+                              dragging = true;
                             });
-                            _scaleItemAnimController.reverse();
-                          } else {
-                            _movingVerticalAnimController.reset();
-                            setState(() {
-                              gotoBottom = true;
-                            });
+                          },
+                          onDragEnd: (detail) {
+                            top = detail.offset.dy;
+                            left = detail.offset.dx;
+                            _movingHorizontalAnimController.forward(from: 0.0);
                             _movingVerticalAnimController.forward(from: 0.0);
-                            _scaleItemAnimController.forward();
-                          }
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            widget.child,
-                            !gotoBottom
+                            setState(() {
+                              dragging = false;
+                            });
+                          },
+                        ),
+                        !gotoBottom
+                            ? SizedBox.shrink()
+                            : (dragging
                                 ? SizedBox.shrink()
                                 : AnimatedBuilder(
                                     animation: _scaleItemAnimController,
@@ -118,22 +137,8 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
                                         ),
                                       );
                                     },
-                                  ),
-                          ],
-                        ),
-                      ),
-                      feedback: widget.child,
-                      childWhenDragging: Container(),
-                      onDragStarted: () {
-                        _movingHorizontalAnimController.reset();
-                        _movingVerticalAnimController.reset();
-                      },
-                      onDragEnd: (detail) {
-                        top = detail.offset.dy;
-                        left = detail.offset.dx;
-                        _movingHorizontalAnimController.forward(from: 0.0);
-                        _movingVerticalAnimController.forward(from: 0.0);
-                      },
+                                  )),
+                      ],
                     ),
                   );
                 });
@@ -167,6 +172,17 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
       return top + ((size.height - top - widget.childHeight) * _movingVerticalAnimController.value);
     }
 
+    return top;
+  }
+
+  double standardTop(double top) {
+    if (top < 0.0) {
+      return 0.0;
+    }
+
+    if (top > size.height - widget.childHeight) {
+      return size.height - widget.childHeight;
+    }
     return top;
   }
 }
