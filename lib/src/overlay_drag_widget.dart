@@ -51,14 +51,14 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
       vsync: this,
       upperBound: 1.0,
       lowerBound: 0.0,
-      duration: Duration(milliseconds: 100),
+      duration: Duration(milliseconds: 200),
     );
 
     _movingVerticalAnimController = AnimationController(
       vsync: this,
       upperBound: 1.0,
       lowerBound: 0.0,
-      duration: Duration(milliseconds: 100),
+      duration: Duration(milliseconds: 200),
     );
 
     _scaleItemAnimController = AnimationController(
@@ -80,20 +80,22 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
             return AnimatedBuilder(
                 animation: _movingVerticalAnimController,
                 builder: (context, childVertical) {
-                  return Positioned(
-                    top: standardTop(calculateY()),
-                    left: calculateX(),
+                  return Transform.translate(
+                    offset: Offset(calculateX(), standardTop(calculateY())),
                     child: Column(
                       children: [
                         Draggable<Color>(
                           child: GestureDetector(
-                            onTap: () {
+                            onTap: () async {
                               if (gotoBottom) {
                                 gotoBottom = false;
-                                top = (size.height -
-                                    widget.childHeight -
-                                    (widget.items.length * widget.itemHeight - widget.items.length * widget.spaceItem));
-                                _scaleItemAnimController.reverse();
+//                                top = (size.height -
+//                                    widget.childHeight -
+//                                    (widget.items.length * widget.itemHeight - widget.items.length * widget.spaceItem));
+//                                _movingVerticalAnimController.reverse();
+                                _scaleItemAnimController.reverse().whenComplete(
+                                      () => _movingVerticalAnimController.reverse(),
+                                    );
                               } else {
                                 gotoBottom = true;
                                 _movingVerticalAnimController.forward(from: 0.0);
@@ -141,6 +143,12 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
                       ],
                     ),
                   );
+
+//                    Positioned(
+//                    top: standardTop(calculateY()),
+//                    left: calculateX(),
+//                    child: ,
+//                  );
                 });
           },
         ),
@@ -155,18 +163,34 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
   }
 
   double calculateY() {
-    if (gotoBottom) {
-      return top +
-          ((size.height -
-                  top -
-                  widget.childHeight -
-                  (widget.items.length * widget.itemHeight - widget.items.length * widget.spaceItem)) *
-              _movingVerticalAnimController.value);
+    double fullItems = size.height -
+        widget.childHeight -
+        (widget.items.length * widget.itemHeight - widget.items.length * widget.spaceItem);
+    if (top + fullItems > size.height) {
+      if (gotoBottom) {
+        return top +
+            ((size.height -
+                    top -
+                    widget.childHeight -
+                    (widget.items.length * widget.itemHeight - widget.items.length * widget.spaceItem)) *
+                _movingVerticalAnimController.value);
+      } else {
+        return top;
+      }
     }
 
-    if (top < 0.0) {
-      return (1 - _movingVerticalAnimController.value) * top;
-    }
+//    if (gotoBottom) {
+//      return top +
+//          ((size.height -
+//                  top -
+//                  widget.childHeight -
+//                  (widget.items.length * widget.itemHeight - widget.items.length * widget.spaceItem)) *
+//              _movingVerticalAnimController.value);
+//    }
+//
+//    if (top < 0.0) {
+//      return (1 - _movingVerticalAnimController.value) * top;
+//    }
 
     if (top + widget.childHeight > size.height) {
       return top + ((size.height - top - widget.childHeight) * _movingVerticalAnimController.value);
