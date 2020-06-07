@@ -78,78 +78,72 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
           animation: _movingHorizontalAnimController,
           builder: (context, childHorizontal) {
             return AnimatedBuilder(
-                animation: _movingVerticalAnimController,
-                builder: (context, childVertical) {
-                  return Transform.translate(
-                    offset: Offset(calculateX(), standardTop(calculateY())),
-                    child: Column(
-                      children: [
-                        Draggable<Color>(
-                          child: GestureDetector(
-                            onTap: () async {
-                              if (gotoBottom) {
-                                gotoBottom = false;
-//                                top = (size.height -
-//                                    widget.childHeight -
-//                                    (widget.items.length * widget.itemHeight - widget.items.length * widget.spaceItem));
-//                                _movingVerticalAnimController.reverse();
-                                _scaleItemAnimController.reverse().whenComplete(
-                                      () => _movingVerticalAnimController.reverse(),
-                                    );
-                              } else {
-                                gotoBottom = true;
-                                _movingVerticalAnimController.forward(from: 0.0);
-                                _scaleItemAnimController.forward();
-                              }
-                            },
-                            child: widget.child,
-                          ),
-                          feedback: widget.child,
-                          childWhenDragging: Container(),
-                          onDragStarted: () {
-                            _movingHorizontalAnimController.reset();
-                            _movingVerticalAnimController.reset();
-                            setState(() {
-                              dragging = true;
-                            });
+              animation: _movingVerticalAnimController,
+              builder: (context, childVertical) {
+                return Transform.translate(
+                  offset: Offset(calculateX(), standardTop(calculateY())),
+                  child: Column(
+                    children: [
+                      Draggable<Color>(
+                        child: GestureDetector(
+                          onTap: () async {
+                            if (widget.items == null || widget.items.isEmpty) {
+                              return;
+                            }
+                            if (gotoBottom) {
+                              gotoBottom = false;
+                              _scaleItemAnimController.reverse().whenComplete(
+                                    () => _movingVerticalAnimController.reverse(),
+                                  );
+                            } else {
+                              gotoBottom = true;
+                              _movingVerticalAnimController.forward(from: 0.0);
+                              _scaleItemAnimController.forward();
+                            }
                           },
-                          onDragEnd: (detail) {
-                            top = detail.offset.dy;
-                            left = detail.offset.dx;
-                            _movingHorizontalAnimController.forward(from: 0.0);
-                            _movingVerticalAnimController.forward(from: 0.0);
-                            setState(() {
-                              dragging = false;
-                            });
-                          },
+                          child: widget.child,
                         ),
-                        !gotoBottom
-                            ? SizedBox.shrink()
-                            : (dragging
-                                ? SizedBox.shrink()
-                                : AnimatedBuilder(
-                                    animation: _scaleItemAnimController,
-                                    builder: (context, childScale) {
-                                      return Transform.scale(
-                                        scale: (_scaleItemAnimController.value),
-                                        alignment: Alignment.topCenter,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: widget.items,
-                                        ),
-                                      );
-                                    },
-                                  )),
-                      ],
-                    ),
-                  );
-
-//                    Positioned(
-//                    top: standardTop(calculateY()),
-//                    left: calculateX(),
-//                    child: ,
-//                  );
-                });
+                        feedback: widget.child,
+                        childWhenDragging: Container(),
+                        onDragStarted: () {
+                          _movingHorizontalAnimController.reset();
+                          _movingVerticalAnimController.reset();
+                          setState(() {
+                            dragging = true;
+                          });
+                        },
+                        onDragEnd: (detail) {
+                          top = detail.offset.dy;
+                          left = detail.offset.dx;
+                          _movingHorizontalAnimController.forward(from: 0.0);
+                          _movingVerticalAnimController.forward(from: 0.0);
+                          setState(() {
+                            dragging = false;
+                          });
+                        },
+                      ),
+                      !gotoBottom
+                          ? SizedBox.shrink()
+                          : (dragging
+                              ? SizedBox.shrink()
+                              : AnimatedBuilder(
+                                  animation: _scaleItemAnimController,
+                                  builder: (context, childScale) {
+                                    return Transform.scale(
+                                      scale: (_scaleItemAnimController.value),
+                                      alignment: Alignment.topCenter,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: widget.items,
+                                      ),
+                                    );
+                                  },
+                                )),
+                    ],
+                  ),
+                );
+              },
+            );
           },
         ),
       ],
@@ -178,19 +172,6 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
         return top;
       }
     }
-
-//    if (gotoBottom) {
-//      return top +
-//          ((size.height -
-//                  top -
-//                  widget.childHeight -
-//                  (widget.items.length * widget.itemHeight - widget.items.length * widget.spaceItem)) *
-//              _movingVerticalAnimController.value);
-//    }
-//
-//    if (top < 0.0) {
-//      return (1 - _movingVerticalAnimController.value) * top;
-//    }
 
     if (top + widget.childHeight > size.height) {
       return top + ((size.height - top - widget.childHeight) * _movingVerticalAnimController.value);
