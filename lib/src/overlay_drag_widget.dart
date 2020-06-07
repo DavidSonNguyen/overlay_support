@@ -47,6 +47,7 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
     super.initState();
     left = widget.initOffsetX ?? 0.0;
     top = widget.initOffsetY ?? 0.0;
+
     _movingHorizontalAnimController = AnimationController(
       vsync: this,
       upperBound: 1.0,
@@ -71,7 +72,14 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    size ??= MediaQuery.of(context).size;
+    if (size == null) {
+      size = MediaQuery.of(context).size;
+      if (left > size.width / 2) {
+        left = size.width - widget.childWidth;
+      } else {
+        left = 0.0;
+      }
+    }
     return Stack(
       children: <Widget>[
         AnimatedBuilder(
