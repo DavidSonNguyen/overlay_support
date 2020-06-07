@@ -157,8 +157,8 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
   }
 
   double calculateY() {
-    double fullItems = size.height -
-        widget.childHeight -
+    double fullItems = widget.childHeight +
+        widget.spaceItem +
         (widget.items.length * widget.itemHeight - widget.items.length * widget.spaceItem);
     if (top + fullItems > size.height) {
       if (gotoBottom) {
