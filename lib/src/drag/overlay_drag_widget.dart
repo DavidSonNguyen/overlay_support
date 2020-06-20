@@ -41,7 +41,7 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
   double left = 0.0;
   Size size;
 
-  bool gotoBottom = false;
+//  bool gotoBottom = false;
   bool dragging = false;
 
   @override
@@ -102,13 +102,13 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
                             if (widget.items == null || widget.items.isEmpty) {
                               return;
                             }
-                            if (gotoBottom) {
-                              gotoBottom = false;
+                            if (widget.dragController.gotoBottom) {
+                              widget.dragController.gotoBottom = false;
                               _scaleItemAnimController.reverse().whenComplete(
                                     () => _movingVerticalAnimController.reverse(),
                                   );
                             } else {
-                              gotoBottom = true;
+                              widget.dragController.gotoBottom = true;
                               _movingVerticalAnimController.forward(from: 0.0);
                               _scaleItemAnimController.forward();
                             }
@@ -134,7 +134,7 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
                           });
                         },
                       ),
-                      !gotoBottom
+                      !widget.dragController.gotoBottom
                           ? SizedBox.shrink()
                           : (dragging
                               ? SizedBox.shrink()
@@ -173,7 +173,7 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
         widget.spaceItem +
         (widget.items.length * widget.itemHeight - widget.items.length * widget.spaceItem);
     if (top + fullItems > size.height) {
-      if (gotoBottom) {
+      if (widget.dragController.gotoBottom) {
         return top +
             ((size.height -
                     top -
