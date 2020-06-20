@@ -117,6 +117,7 @@ OverlaySupportEntry showOverlay(
   double spaceItem = 0.0,
   double initOffsetX = 0.0,
   double initOffsetY = 0.0,
+  OverlayDragController controller,
 }) {
   assert(key is! GlobalKey);
   assert(_debugInitialized, 'OverlaySupport Not Initialized ! \nensure your app wrapped widget OverlaySupport');
@@ -159,6 +160,7 @@ OverlaySupportEntry showOverlay(
             spaceItem: spaceItem,
             initOffsetX: initOffsetX,
             initOffsetY: initOffsetY,
+            dragController: controller,
           ),
         );
       },
