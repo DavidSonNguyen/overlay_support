@@ -75,6 +75,14 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
   }
 
   @override
+  void dispose() {
+    _movingHorizontalAnimController.dispose();
+    _movingVerticalAnimController.dispose();
+    _scaleItemAnimController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (size == null) {
       size = MediaQuery.of(context).size;
@@ -113,7 +121,7 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
                               _scaleItemAnimController.forward();
                             }
                           },
-                          child: widget.child,
+                          child: widget.dragController.mainButton ?? widget.child,
                         ),
                         feedback: widget.child,
                         childWhenDragging: Container(),
