@@ -5,6 +5,7 @@ export 'src/notification/notification.dart';
 export 'src/overlay.dart';
 export 'src/toast/toast.dart';
 export 'src/theme.dart';
+export 'src/drag/overlay_drag_controller.dart';
 
 ///The length of time the notification is fully displayed
 Duration kNotificationDuration = const Duration(milliseconds: 2000);
