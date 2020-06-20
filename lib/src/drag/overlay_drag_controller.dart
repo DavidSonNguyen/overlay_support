@@ -1,10 +1,18 @@
 import 'package:flutter/cupertino.dart';
 
+enum DragType {
+  main,
+  item,
+}
+
+typedef OnListening = Function(BuildContext context, DragType type, int index);
+
 class OverlayDragController extends ChangeNotifier {
   AnimationController _animationController;
   bool gotoBottom = false;
   Widget mainButton;
   List<Widget> children;
+  OnListening _onListening;
 
   OverlayDragController({
     this.mainButton,
@@ -29,6 +37,16 @@ class OverlayDragController extends ChangeNotifier {
     gotoBottom = false;
     notifyListeners();
     _animationController.reverse();
+  }
+
+  void setOnListener(OnListening onListening) {
+    this._onListening = onListening;
+  }
+
+  void sendEvent(BuildContext context, DragType type, {int index}) {
+    if (this._onListening != null) {
+      this._onListening(context, type, index ?? 0);
+    }
   }
 
   void open() {
