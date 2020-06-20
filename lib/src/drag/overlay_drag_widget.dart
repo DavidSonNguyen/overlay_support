@@ -1,4 +1,4 @@
-part of 'overlay.dart';
+part of '../overlay.dart';
 
 class OverlayDragWidget extends StatefulWidget {
   final Widget child;
@@ -9,6 +9,7 @@ class OverlayDragWidget extends StatefulWidget {
   final List<Widget> items;
   final double itemHeight;
   final double spaceItem;
+  final OverlayDragController dragController;
 
   OverlayDragWidget({
     Key key,
@@ -20,6 +21,7 @@ class OverlayDragWidget extends StatefulWidget {
     this.items = const [],
     this.itemHeight = 0.0,
     this.spaceItem = 0.0,
+    this.dragController,
   }) : super(key: key) {
     assert(childWidth != null && childHeight != null);
   }
@@ -68,6 +70,8 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
       lowerBound: 0.0,
       duration: Duration(milliseconds: 200),
     );
+
+    widget.dragController.setAnimationController(_scaleItemAnimController);
   }
 
   @override

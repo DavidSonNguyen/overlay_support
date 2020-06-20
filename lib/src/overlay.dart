@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/src/theme.dart';
+import 'package:overlay_support/src/drag/overlay_drag_controller.dart';
 
 part 'overlay_animation.dart';
 
@@ -15,7 +16,7 @@ part 'overlay_entry.dart';
 
 part 'overlay_key.dart';
 
-part 'overlay_drag_widget.dart';
+part 'drag/overlay_drag_widget.dart';
 
 /// to build a widget with animated value
 /// [progress] : the progress of overlay animation from 0 - 1
