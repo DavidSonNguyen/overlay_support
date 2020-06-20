@@ -53,9 +53,7 @@ class OverlayDragController extends ChangeNotifier {
 
   void removeEvent(OnListening onListening) {
     this.listeners.remove(onListening);
-    if (!this.listeners.contains(_newListener)) {
-      _newListener = this.listeners.last;
-    }
+    _newListener = this.listeners.last;
   }
 
 //  void backEvent() {
