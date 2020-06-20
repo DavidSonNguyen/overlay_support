@@ -12,7 +12,8 @@ class OverlayDragController extends ChangeNotifier {
   bool gotoBottom = false;
   Widget mainButton;
   List<Widget> children;
-  OnListening _onListening;
+  OnListening _newListener;
+  Set<OnListening> listeners = Set();
 
   OverlayDragController({
     this.mainButton,
@@ -40,13 +41,30 @@ class OverlayDragController extends ChangeNotifier {
   }
 
   void setOnListener(OnListening onListening) {
-    this._onListening = onListening;
+    this._newListener = onListening;
+    this.listeners.add(_newListener);
   }
 
   void sendEvent(BuildContext context, DragType type, {int index}) {
-    if (this._onListening != null) {
-      this._onListening(context, type, index ?? 0);
+    if (this._newListener != null) {
+      this._newListener(context, type, index ?? 0);
     }
+  }
+
+  void removeEvent(OnListening onListening) {
+    this.listeners.remove(onListening);
+    if (!this.listeners.contains(_newListener)) {
+      _newListener = this.listeners.last;
+    }
+  }
+
+//  void backEvent() {
+//    this.listeners.remove(_newListener);
+//    this._newListener = this.listeners.last;
+//  }
+
+  void clear() {
+    this.listeners.clear();
   }
 
   void open() {
