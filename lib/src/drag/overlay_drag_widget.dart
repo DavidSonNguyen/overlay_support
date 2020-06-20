@@ -42,6 +42,7 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
   @override
   void initState() {
     super.initState();
+    widget.dragController.updateChildren(widget.items);
     left = widget.initOffsetX ?? 0.0;
     top = widget.initOffsetY ?? 0.0;
 
