@@ -74,6 +74,6 @@ class OverlayDragController extends ChangeNotifier {
   }
 }
 
-abstract class DragEventListenerMixin {
+mixin DragEventListenerMixin {
   OnListening get dragListener;
 }
