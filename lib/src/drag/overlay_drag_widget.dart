@@ -119,7 +119,7 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
                           },
                           child: widget.dragController.mainButton ?? widget.child,
                         ),
-                        feedback: widget.child,
+                        feedback: widget.dragController.mainButton ?? widget.child,
                         childWhenDragging: Container(),
                         onDragStarted: () {
                           _movingHorizontalAnimController.reset();
