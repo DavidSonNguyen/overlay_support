@@ -12,8 +12,8 @@ class OverlayDragController extends ChangeNotifier {
   bool gotoBottom = false;
   Widget mainButton;
   List<Widget> children;
-  OnListening _newListener;
-  Set<OnListening> listeners = Set();
+  Map<String, OnListening> _mapListeners = {};
+  String _currentKey = '';
 
   OverlayDragController({
     this.mainButton,
@@ -40,20 +40,20 @@ class OverlayDragController extends ChangeNotifier {
     _animationController.reverse();
   }
 
-  void setOnListener(OnListening onListening) {
-    this._newListener = onListening;
-    this.listeners.add(_newListener);
+  void setOnListener(String key, OnListening onListening) {
+    this._mapListeners[key] = onListening;
+    this._currentKey = key;
   }
 
   void sendEvent(BuildContext context, DragType type, {int index}) {
-    if (this._newListener != null) {
-      this._newListener(context, type, index ?? 0);
+    if (this._mapListeners[_currentKey] != null) {
+      this._mapListeners[_currentKey](context, type, index ?? 0);
     }
   }
 
-  void removeEvent(OnListening onListening) {
-    this.listeners.remove(onListening);
-    _newListener = this.listeners.last;
+  void removeEvent(String key) {
+    this._mapListeners.remove(key);
+    this._currentKey = this._mapListeners.keys.last ?? '';
   }
 
 //  void backEvent() {
@@ -62,7 +62,7 @@ class OverlayDragController extends ChangeNotifier {
 //  }
 
   void clear() {
-    this.listeners.clear();
+    this._mapListeners.clear();
   }
 
   void open() {
