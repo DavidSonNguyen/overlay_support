@@ -73,3 +73,7 @@ class OverlayDragController extends ChangeNotifier {
     _animationController.forward();
   }
 }
+
+abstract class DragEventListenerMixin {
+  OnListening get dragListener;
+}
