@@ -8,6 +8,7 @@ class OverlayDragController extends ChangeNotifier {
 
   OverlayDragController({
     this.mainButton,
+    this.children,
   });
 
   void setAnimationController(AnimationController controller) {
