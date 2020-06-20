@@ -4,6 +4,7 @@ class OverlayDragController extends ChangeNotifier {
   AnimationController _animationController;
   bool gotoBottom = false;
   Widget mainButton;
+  List<Widget> children;
 
   OverlayDragController({
     this.mainButton,
@@ -15,6 +16,11 @@ class OverlayDragController extends ChangeNotifier {
 
   void updateMainButton(Widget ui) {
     mainButton = ui;
+    notifyListeners();
+  }
+
+  void updateChildren(List<Widget> children) {
+    this.children = children;
     notifyListeners();
   }
 

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:flutter/material.dart';
+import 'package:overlay_support/src/drag/drag_button.dart';
 import 'package:overlay_support/src/theme.dart';
 import 'package:overlay_support/src/drag/overlay_drag_controller.dart';
 
@@ -25,7 +26,7 @@ part 'drag/overlay_drag_widget.dart';
 ///
 typedef Widget AnimatedOverlayWidgetBuilder(BuildContext context, double progress);
 
-typedef Widget OverlayWidgetBuilder(BuildContext context);
+typedef DragMainButton OverlayWidgetBuilder(BuildContext context);
 
 ///basic api to show overlay widget
 ///
@@ -110,18 +111,13 @@ OverlaySupportEntry showOverlayAutoHide(
 OverlaySupportEntry showOverlay(
   OverlayWidgetBuilder builder, {
   Key key,
-  @required double childWidth,
-  @required double childHeight,
   List<Widget> items = const [],
-  double itemHeight = 0.0,
-  double spaceItem = 0.0,
   double initOffsetX = 0.0,
   double initOffsetY = 0.0,
   OverlayDragController controller,
 }) {
   assert(key is! GlobalKey);
   assert(_debugInitialized, 'OverlaySupport Not Initialized ! \nensure your app wrapped widget OverlaySupport');
-  assert(childWidth != null && childHeight != null);
 
   final OverlayState overlay = _overlayState;
   if (overlay == null) {
@@ -152,12 +148,8 @@ OverlaySupportEntry showOverlay(
         return _KeyedOverlay(
           key: overlayKey,
           child: OverlayDragWidget(
-            childHeight: childWidth,
-            childWidth: childHeight,
             child: builder(context),
             items: items,
-            itemHeight: itemHeight,
-            spaceItem: spaceItem,
             initOffsetX: initOffsetX,
             initOffsetY: initOffsetY,
             dragController: controller,

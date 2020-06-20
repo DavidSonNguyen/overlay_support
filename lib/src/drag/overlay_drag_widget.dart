@@ -1,30 +1,20 @@
 part of '../overlay.dart';
 
 class OverlayDragWidget extends StatefulWidget {
-  final Widget child;
-  final double childWidth;
-  final double childHeight;
+  final DragMainButton child;
   final double initOffsetX;
   final double initOffsetY;
   final List<Widget> items;
-  final double itemHeight;
-  final double spaceItem;
   final OverlayDragController dragController;
 
   OverlayDragWidget({
     Key key,
     this.child,
-    this.childWidth,
-    this.childHeight,
     this.initOffsetX,
     this.initOffsetY,
     this.items = const [],
-    this.itemHeight = 0.0,
-    this.spaceItem = 0.0,
     this.dragController,
-  }) : super(key: key) {
-    assert(childWidth != null && childHeight != null);
-  }
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -40,6 +30,11 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
   double top = 0.0;
   double left = 0.0;
   Size size;
+
+  final double childWidth = 60.0;
+  final double childHeight = 60.0;
+  final double itemHeight = 50.0;
+  final double spaceItem = 8.0;
 
 //  bool gotoBottom = false;
   bool dragging = false;
@@ -87,7 +82,7 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
     if (size == null) {
       size = MediaQuery.of(context).size;
       if (left > size.width / 2) {
-        left = size.width - widget.childWidth;
+        left = size.width - childWidth;
       } else {
         left = 0.0;
       }
@@ -154,7 +149,7 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
                                       alignment: Alignment.topCenter,
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.end,
-                                        children: widget.items,
+                                        children: widget.dragController.children ?? widget.items,
                                       ),
                                     );
                                   },
@@ -171,30 +166,25 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
   }
 
   double calculateX() {
-    return left + (widget.childWidth / 2) < (size.width / 2)
+    return left + (childWidth / 2) < (size.width / 2)
         ? (1 - _movingHorizontalAnimController.value) * left
-        : left + ((size.width - left - widget.childWidth) * _movingHorizontalAnimController.value);
+        : left + ((size.width - left - childWidth) * _movingHorizontalAnimController.value);
   }
 
   double calculateY() {
-    double fullItems = widget.childHeight +
-        widget.spaceItem +
-        (widget.items.length * widget.itemHeight - widget.items.length * widget.spaceItem);
+    double fullItems = childHeight + spaceItem + (widget.items.length * itemHeight - widget.items.length * spaceItem);
     if (top + fullItems > size.height) {
       if (widget.dragController.gotoBottom) {
         return top +
-            ((size.height -
-                    top -
-                    widget.childHeight -
-                    (widget.items.length * widget.itemHeight - widget.items.length * widget.spaceItem)) *
+            ((size.height - top - childHeight - (widget.items.length * itemHeight - widget.items.length * spaceItem)) *
                 _movingVerticalAnimController.value);
       } else {
         return top;
       }
     }
 
-    if (top + widget.childHeight > size.height) {
-      return top + ((size.height - top - widget.childHeight) * _movingVerticalAnimController.value);
+    if (top + childHeight > size.height) {
+      return top + ((size.height - top - childHeight) * _movingVerticalAnimController.value);
     }
 
     return top;
@@ -205,8 +195,8 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
       return 0.0;
     }
 
-    if (top > size.height - widget.childHeight) {
-      return size.height - widget.childHeight;
+    if (top > size.height - childHeight) {
+      return size.height - childHeight;
     }
     return top;
   }

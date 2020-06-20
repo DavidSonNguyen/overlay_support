@@ -143,63 +143,59 @@ class HomePage extends StatelessWidget {
             onPressed: () {
               showOverlay(
                 (context) {
-                  return Container(
-                    width: 60.0,
-                    height: 60.0,
-                    margin: EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(30.0),
+                  return DragMainButton(
+                    child: Container(
+                      margin: EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
                     ),
                   );
                 },
-                childHeight: 76.0,
-                childWidth: 76.0,
-                itemHeight: 50.0,
-                spaceItem: 8.0,
-                items: <Widget>[
-                  Container(
-                    width: 50.0,
-                    height: 50.0,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(25.0),
+                items: [
+                  DragItemButton(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
                     ),
                   ),
                   SizedBox(height: 8.0),
-                  Container(
-                    width: 50.0,
-                    height: 50.0,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(25.0),
+                  DragItemButton(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
                     ),
                   ),
                   SizedBox(height: 8.0),
-                  Container(
-                    width: 50.0,
-                    height: 50.0,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(25.0),
+                  DragItemButton(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
                     ),
                   ),
                   SizedBox(height: 8.0),
-                  Container(
-                    width: 50.0,
-                    height: 50.0,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(25.0),
+                  DragItemButton(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
                     ),
                   ),
                   SizedBox(height: 8.0),
-                  Container(
-                    width: 50.0,
-                    height: 50.0,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(25.0),
+                  DragItemButton(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
                     ),
                   ),
                 ],
