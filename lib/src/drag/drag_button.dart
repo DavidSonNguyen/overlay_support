@@ -14,8 +14,8 @@ class DragMainButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 60.0,
-      height: 60.0,
+      width: 76.0,
+      height: 76.0,
       child: child,
     );
   }

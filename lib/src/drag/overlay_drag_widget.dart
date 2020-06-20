@@ -31,8 +31,8 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
   double left = 0.0;
   Size size;
 
-  final double childWidth = 60.0;
-  final double childHeight = 60.0;
+  final double childWidth = 76.0;
+  final double childHeight = 76.0;
   final double itemHeight = 50.0;
   final double spaceItem = 8.0;
 
