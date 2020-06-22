@@ -5,26 +5,28 @@ enum DragType {
   item,
 }
 
-typedef OnListening = Function(BuildContext context, DragType type, int index);
+typedef OnListening = Function(DragType type, int index);
 
 class OverlayDragController extends ChangeNotifier {
   AnimationController _animationController;
   bool gotoBottom = false;
   Widget mainButton;
-  List<Widget> children;
+  List<Widget> children = [];
   Map<String, OnListening> _mapListeners = {};
   String _currentKey = '';
 
   OverlayDragController({
     this.mainButton,
     this.children,
-  });
+  }) {
+    this.children ??= [];
+  }
 
   void setAnimationController(AnimationController controller) {
     _animationController = controller;
   }
 
-  void updateMainButton(Widget ui) {
+  Future<void> updateMainButton(Widget ui) async {
     mainButton = ui;
     notifyListeners();
   }
@@ -45,9 +47,9 @@ class OverlayDragController extends ChangeNotifier {
     this._currentKey = key;
   }
 
-  void sendEvent(BuildContext context, DragType type, {int index}) {
+  void sendEvent(DragType type, {int index}) {
     if (this._mapListeners[_currentKey] != null) {
-      this._mapListeners[_currentKey](context, type, index ?? 0);
+      this._mapListeners[_currentKey](type, index ?? 0);
     }
   }
 

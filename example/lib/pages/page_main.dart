@@ -142,17 +142,6 @@ class HomePage extends StatelessWidget {
           RaisedButton(
             onPressed: () {
               showOverlay(
-                (context) {
-                  return DragMainButton(
-                    child: Container(
-                      margin: EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                    ),
-                  );
-                },
                 items: [
                   DragItemButton(
                     child: Container(

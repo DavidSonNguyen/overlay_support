@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:overlay_support/src/drag/drag_button.dart';
 import 'package:overlay_support/src/theme.dart';
 import 'package:overlay_support/src/drag/overlay_drag_controller.dart';
+import 'package:provider/provider.dart';
 
 part 'overlay_animation.dart';
 
@@ -108,8 +109,7 @@ OverlaySupportEntry showOverlayAutoHide(
   return entry;
 }
 
-OverlaySupportEntry showOverlay(
-  OverlayWidgetBuilder builder, {
+OverlaySupportEntry showOverlay({
   Key key,
   List<Widget> items = const [],
   double initOffsetX = 0.0,
@@ -148,7 +148,6 @@ OverlaySupportEntry showOverlay(
         return _KeyedOverlay(
           key: overlayKey,
           child: OverlayDragWidget(
-            child: builder(context),
             items: items,
             initOffsetX: initOffsetX,
             initOffsetY: initOffsetY,

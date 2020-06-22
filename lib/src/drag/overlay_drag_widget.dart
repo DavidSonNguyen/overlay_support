@@ -42,7 +42,6 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
   @override
   void initState() {
     super.initState();
-    widget.dragController.updateChildren(widget.items);
     left = widget.initOffsetX ?? 0.0;
     top = widget.initOffsetY ?? 0.0;
 
@@ -90,77 +89,87 @@ class _OverlayDragState extends State<OverlayDragWidget> with TickerProviderStat
     }
     return Stack(
       children: <Widget>[
-        AnimatedBuilder(
-          animation: _movingHorizontalAnimController,
-          builder: (context, childHorizontal) {
-            return AnimatedBuilder(
-              animation: _movingVerticalAnimController,
-              builder: (context, childVertical) {
-                return Transform.translate(
-                  offset: Offset(calculateX(), standardTop(calculateY())),
-                  child: Column(
-                    children: [
-                      Draggable<Color>(
-                        child: GestureDetector(
-                          onTap: () async {
-                            if (widget.items == null || widget.items.isEmpty) {
-                              return;
-                            }
-                            if (widget.dragController.gotoBottom) {
-                              widget.dragController.gotoBottom = false;
-                              _scaleItemAnimController.reverse().whenComplete(
-                                    () => _movingVerticalAnimController.reverse(),
-                                  );
-                            } else {
-                              widget.dragController.gotoBottom = true;
-                              _movingVerticalAnimController.forward(from: 0.0);
-                              _scaleItemAnimController.forward();
-                            }
-                          },
-                          child: widget.dragController.mainButton ?? widget.child,
+        ChangeNotifierProvider<OverlayDragController>(
+          create: (context) => widget.dragController,
+          child: Consumer<OverlayDragController>(
+            builder: (context, controller, child) {
+              return AnimatedBuilder(
+                animation: _movingHorizontalAnimController,
+                builder: (context, childHorizontal) {
+                  return AnimatedBuilder(
+                    animation: _movingVerticalAnimController,
+                    builder: (context, childVertical) {
+                      List<Widget> items = widget.dragController.children.isEmpty ?  widget.items : widget.dragController.children;
+                      return Transform.translate(
+                        offset: Offset(calculateX(), standardTop(calculateY())),
+                        child: Column(
+                          children: [
+                            Draggable<Color>(
+                              child: items == null || items.isEmpty
+                                  ? (widget.dragController.mainButton ?? widget.child)
+                                  : GestureDetector(
+                                      onTap: () async {
+                                        if (items == null || items.isEmpty) {
+                                          return;
+                                        }
+                                        if (widget.dragController.gotoBottom) {
+                                          widget.dragController.gotoBottom = false;
+                                          _scaleItemAnimController.reverse().whenComplete(
+                                                () => _movingVerticalAnimController.reverse(),
+                                              );
+                                        } else {
+                                          widget.dragController.gotoBottom = true;
+                                          _movingVerticalAnimController.forward(from: 0.0);
+                                          _scaleItemAnimController.forward();
+                                        }
+                                      },
+                                      child: widget.dragController.mainButton ?? widget.child,
+                                    ),
+                              feedback: widget.dragController.mainButton ?? widget.child,
+                              childWhenDragging: Container(),
+                              onDragStarted: () {
+                                _movingHorizontalAnimController.reset();
+                                _movingVerticalAnimController.reset();
+                                setState(() {
+                                  dragging = true;
+                                });
+                              },
+                              onDragEnd: (detail) {
+                                top = detail.offset.dy;
+                                left = detail.offset.dx;
+                                _movingHorizontalAnimController.forward(from: 0.0);
+                                _movingVerticalAnimController.forward(from: 0.0);
+                                setState(() {
+                                  dragging = false;
+                                });
+                              },
+                            ),
+                            !widget.dragController.gotoBottom
+                                ? SizedBox.shrink()
+                                : (dragging
+                                    ? SizedBox.shrink()
+                                    : AnimatedBuilder(
+                                        animation: _scaleItemAnimController,
+                                        builder: (context, childScale) {
+                                          return Transform.scale(
+                                            scale: (_scaleItemAnimController.value),
+                                            alignment: Alignment.topCenter,
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: items,
+                                            ),
+                                          );
+                                        },
+                                      )),
+                          ],
                         ),
-                        feedback: widget.dragController.mainButton ?? widget.child,
-                        childWhenDragging: Container(),
-                        onDragStarted: () {
-                          _movingHorizontalAnimController.reset();
-                          _movingVerticalAnimController.reset();
-                          setState(() {
-                            dragging = true;
-                          });
-                        },
-                        onDragEnd: (detail) {
-                          top = detail.offset.dy;
-                          left = detail.offset.dx;
-                          _movingHorizontalAnimController.forward(from: 0.0);
-                          _movingVerticalAnimController.forward(from: 0.0);
-                          setState(() {
-                            dragging = false;
-                          });
-                        },
-                      ),
-                      !widget.dragController.gotoBottom
-                          ? SizedBox.shrink()
-                          : (dragging
-                              ? SizedBox.shrink()
-                              : AnimatedBuilder(
-                                  animation: _scaleItemAnimController,
-                                  builder: (context, childScale) {
-                                    return Transform.scale(
-                                      scale: (_scaleItemAnimController.value),
-                                      alignment: Alignment.topCenter,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: widget.dragController.children ?? widget.items,
-                                      ),
-                                    );
-                                  },
-                                )),
-                    ],
-                  ),
-                );
-              },
-            );
-          },
+                      );
+                    },
+                  );
+                },
+              );
+            },
+          ),
         ),
       ],
     );
